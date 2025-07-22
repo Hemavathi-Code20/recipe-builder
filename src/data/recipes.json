@@ -2,16 +2,19 @@
   {
     "title": "Garlic Pasta",
     "ingredients": ["pasta", "garlic", "olive oil", "salt"],
-    "steps": "Boil pasta. Sauté garlic. Mix with olive oil and pasta."
+    "steps": "Boil pasta. Sauté garlic. Mix with olive oil and pasta.",
+    "thumbnail": "https://via.placeholder.com/300x150?text=Garlic+Pasta"
   },
   {
     "title": "Cheese Omelette",
     "ingredients": ["egg", "cheese", "salt", "pepper"],
-    "steps": "Beat eggs. Add cheese and seasoning. Cook in pan."
+    "steps": "Beat eggs. Add cheese and seasoning. Cook in pan.",
+    "thumbnail": "https://via.placeholder.com/300x150?text=Omelette"
   },
   {
     "title": "Tomato Sandwich",
     "ingredients": ["bread", "tomato", "salt", "pepper"],
-    "steps": "Slice tomato. Place in bread with seasoning."
+    "steps": "Slice tomato. Place in bread with seasoning.",
+    "thumbnail": "https://via.placeholder.com/300x150?text=Sandwich"
   }
 ]
