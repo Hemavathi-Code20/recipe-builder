@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import IngredientSelector from './components/IngredientSelector';
 import RecipeCard from './components/RecipeCard';
 import RecipeModal from './components/RecipeModal';
@@ -6,81 +6,41 @@ import recipes from './data/recipes.json';
 
 const App = () => {
   const [selectedIngredients, setSelectedIngredients] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedRecipe, setSelectedRecipe] = useState(null);
-  const [favorites, setFavorites] = useState([]);
 
-  useEffect(() => {
-    const savedPantry = JSON.parse(localStorage.getItem('pantry'));
-    const savedFavs = JSON.parse(localStorage.getItem('favorites'));
-    if (savedPantry) setSelectedIngredients(savedPantry);
-    if (savedFavs) setFavorites(savedFavs);
-  }, []);
+  const handleSpin = () => {
+    const all = IngredientSelector.ALL_INGREDIENTS;
+    const randomSet = [];
 
-  useEffect(() => {
-    localStorage.setItem('pantry', JSON.stringify(selectedIngredients));
-    localStorage.setItem('favorites', JSON.stringify(favorites));
-  }, [selectedIngredients, favorites]);
+    while (randomSet.length < 3) {
+      const choice = all[Math.floor(Math.random() * all.length)];
+      if (!randomSet.includes(choice)) randomSet.push(choice);
+    }
 
-  const handleSelect = (ingredient) => {
-    setSelectedIngredients((prev) =>
-      prev.includes(ingredient)
-        ? prev.filter((item) => item !== ingredient)
-        : [...prev, ingredient]
-    );
+    setSelectedIngredients(randomSet);
   };
 
-  const toggleFavorite = (title) => {
-    setFavorites((prev) =>
-      prev.includes(title)
-        ? prev.filter((fav) => fav !== title)
-        : [...prev, title]
-    );
-  };
-
-  const filteredRecipes = recipes
-    .filter((recipe) =>
-      recipe.title.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    .map((recipe) => {
-      const matchCount = recipe.ingredients.filter((ing) =>
-        selectedIngredients.includes(ing)
-      ).length;
-      return { ...recipe, matchCount };
-    })
-    .sort((a, b) => b.matchCount - a.matchCount); // Sort by best match
+  const filteredRecipes = recipes.filter((recipe) =>
+    recipe.ingredients.some((ing) => selectedIngredients.includes(ing))
+  );
 
   return (
     <div className="app">
-      <h1>🥗 Recipe Builder</h1>
-
-      <input
-        type="text"
-        placeholder="Search recipes..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        className="search-bar"
-      />
+      <h1>🎲 Mystery Meal Maker</h1>
 
       <IngredientSelector
-        selectedIngredients={selectedIngredients}
-        onSelect={handleSelect}
+        ingredients={selectedIngredients}
+        onSpin={handleSpin}
       />
 
-      <h2>Recipes</h2>
+      <h2>Recipes Based on Mystery Ingredients</h2>
       <div className="recipe-grid">
-        {filteredRecipes.length > 0 ? (
-          filteredRecipes.map((recipe, idx) => (
-            <RecipeCard
-              key={idx}
-              recipe={recipe}
-              onClick={() => setSelectedRecipe(recipe)}
-              isFavorite={favorites.includes(recipe.title)}
-              onFavoriteToggle={() => toggleFavorite(recipe.title)}
-            />
+        {filteredRecipes.length ? (
+          filteredRecipes.map((r, i) => (
+            <RecipeCard key={i} recipe={r} onClick={() => setSelectedRecipe(r)} />
           ))
         ) : (
-          <p>No recipes found.</p>
+          <p>No recipes match your spun ingredients.</p>
         )}
       </div>
 
